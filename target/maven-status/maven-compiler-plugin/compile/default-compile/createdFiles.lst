@@ -22,7 +22,6 @@ innovar\io\grifo\entity\Address.class
 innovar\io\grifo\config\ExceptionHandling\WebException.class
 innovar\io\grifo\config\captcha\BusquedaCookie.class
 innovar\io\grifo\config\ExceptionHandling\RequestException.class
-innovar\io\grifo\config\captcha\NodeController.class
 innovar\io\grifo\dto\LoginDto.class
 innovar\io\grifo\security\CorsConfiguration.class
 innovar\io\grifo\repository\UserDao.class
