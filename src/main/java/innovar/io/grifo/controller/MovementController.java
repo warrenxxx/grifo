@@ -26,7 +26,7 @@ public class MovementController {
     RouterFunction Employefunction(EmployesService service){
         return route(POST("/movement/ticker"),service::newTicket)
                 .andRoute(POST("/movement/bill"),service::newBill)
-                .andRoute(POST("/movement/print"),service::newPrint)
+//                .andRoute(POST("/movement/print"),service::newPrint)
                 .filter(jwt::verifyFunctions)
                 ;
     }
