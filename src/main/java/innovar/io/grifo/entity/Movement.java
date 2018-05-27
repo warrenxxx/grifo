@@ -20,14 +20,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Movement {
-
     private String id;
-
     private LocalDate date;
-    private String responsibleCode;
     private String numberOfDocument;
     private String typeOfDocument;
-    private Boolean isBill;
     private MovementDetail[] movementDetails;
 
 }

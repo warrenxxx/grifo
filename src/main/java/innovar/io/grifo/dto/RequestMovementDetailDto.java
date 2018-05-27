@@ -25,10 +25,9 @@ import lombok.NoArgsConstructor;
 public class RequestMovementDetailDto {
     private String idProduct;
     private String cod;
-    private Long quantity;
+    private Long quantityGal;
+    private Long quantitySol;
     private String description;
-    //   private ObjectId measureUnitId;
-//    private CurrencyExchange currencyExchange;
     private Double unitaryPrice;
 
 

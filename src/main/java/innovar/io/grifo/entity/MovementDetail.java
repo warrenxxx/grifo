@@ -17,7 +17,8 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 public class MovementDetail {
     private ObjectId _idProduct;
-    private Long quantity;
+    private Long quantityGal;
+    private Long quantitySol;
     private Double discount;
     private Double Price;
 }

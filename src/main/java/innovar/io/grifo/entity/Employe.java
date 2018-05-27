@@ -33,5 +33,5 @@ public class Employe {
 
     private String userName;
 
-    private Movement movement[];
+    private Movement movements[];
 }

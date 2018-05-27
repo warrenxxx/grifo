@@ -18,19 +18,19 @@ package innovar.io.grifo.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 public class RequestMovementDto {
     private LocalDate date;
     private String name;
-    private String typeOfDocument;
     private String documentNumber;
     private String addres;
     private Double igv;
-    private Boolean isBill;
     private RequestMovementDetailDto[] movementDetails;
 }
