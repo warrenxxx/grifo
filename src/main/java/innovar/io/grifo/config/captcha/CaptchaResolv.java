@@ -16,12 +16,12 @@
 package innovar.io.grifo.config.captcha;
 
 import innovar.io.grifo.entity.Person;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
+//import javafx.application.Platform;
+//import javafx.event.ActionEvent;
+//import javafx.scene.control.TextField;
+//import javafx.scene.image.Image;
+//import javafx.scene.image.ImageView;
+//import javafx.stage.Stage;
 import org.bson.types.ObjectId;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.lept;
@@ -40,39 +40,39 @@ import java.util.stream.Stream;
 
 @Service
 public class CaptchaResolv {
-    public TextField txtReniec;
-    public TextField txtSunnat;
-    public ImageView imgSunnat;
-    public ImageView imgReniec;
+//    public TextField txtReniec;
+//    public TextField txtSunnat;
+//    public ImageView imgSunnat;
+//    public ImageView imgReniec;
 
 
     public static String codReniec;
     public static String codSunnat;
 
-    Stage stage;
+//    Stage stage;
 
-    public CaptchaResolv setImageReniec(Image imageReniec){
-        this.imgReniec.setImage(imageReniec);
-        return this;
-    }
-    public CaptchaResolv setImageSunnat(Image imageSunnat){
-        this.imgSunnat.setImage(imageSunnat);
-        return this;
-    }
-
-    public CaptchaResolv setStage(Stage stage) {
-        this.stage = stage;
-        return this;
-    }
-
-    public void iniciar(ActionEvent actionEvent) {
-        codReniec=txtReniec.getText();
-        codSunnat=txtSunnat.getText();
-        Platform.setImplicitExit(false);
-
-        stage.hide();
-
-    }
+//    public CaptchaResolv setImageReniec(Image imageReniec){
+//        this.imgReniec.setImage(imageReniec);
+//        return this;
+//    }
+//    public CaptchaResolv setImageSunnat(Image imageSunnat){
+//        this.imgSunnat.setImage(imageSunnat);
+//        return this;
+//    }
+//
+//    public CaptchaResolv setStage(Stage stage) {
+//        this.stage = stage;
+//        return this;
+//    }
+//
+//    public void iniciar(ActionEvent actionEvent) {
+//        codReniec=txtReniec.getText();
+//        codSunnat=txtSunnat.getText();
+//        Platform.setImplicitExit(false);
+//
+//        stage.hide();
+//
+//    }
     List<Object> logeoReniec;
     List<Object> logeoSunnat;
 
