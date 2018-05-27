@@ -1,0 +1,6 @@
+innovar\io\grifo\controller\MovementController.class
+innovar\io\grifo\config\models\Controller.class
+innovar\io\grifo\config\models\Detail.class
+innovar\io\grifo\security\CorsConfiguration.class
+innovar\io\grifo\service\EmployesService.class
+innovar\io\grifo\config\models\NodeController.class
