@@ -11,7 +11,8 @@ import org.springframework.web.server.WebFilter;
 public class GrifoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GrifoApplication.class, args);com.sun.javafx.application.PlatformImpl.startup(()->{});
+        SpringApplication.run(GrifoApplication.class, args);
+//        com.sun.javafx.application.PlatformImpl.startup(()->{});
     }
 
     @Bean
