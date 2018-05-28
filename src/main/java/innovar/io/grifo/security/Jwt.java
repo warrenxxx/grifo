@@ -3,6 +3,7 @@ package innovar.io.grifo.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.ExceptionHandling.AuthorizationException;
 import innovar.io.grifo.config.ExceptionHandling.HeaderException;
 import org.bson.types.ObjectId;
@@ -68,7 +69,7 @@ public class Jwt {
                 )
                 .switchIfEmpty(Mono.error(new HeaderException("Authorization")))
                 .publishNext()
-
+                .onErrorResume(AppResponse::AppResponseError)
                 ;
     }
 

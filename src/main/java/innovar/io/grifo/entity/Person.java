@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
@@ -25,15 +26,15 @@ import java.time.LocalDate;
 public class Person {
 
     @Id
-    private ObjectId _id;
+    private String _id;
 
-    @Indexed
+    @TextIndexed
     private String allName;
 
-    @Indexed
+    @TextIndexed
     private String rucUser;
 
-    @Indexed
+    @TextIndexed
     private String dni;
 
     private Address address;

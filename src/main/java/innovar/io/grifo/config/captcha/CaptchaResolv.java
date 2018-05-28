@@ -78,8 +78,6 @@ public class CaptchaResolv {
 
     public Person getRuc(String ruc, File tessdata, String lang){
 
-        System.out.println(tessdata.toURI().toString());
-        System.out.println(lang);
         try {
 
             logeoSunnat = new BusquedaCookie().buscarCookieLogueo("http://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/frameCriterioBusqueda.jsp");
@@ -121,13 +119,28 @@ public class CaptchaResolv {
             System.out.println(rpta);
             Document doc=Jsoup.parse(rpta);
             Element table=doc.getElementsByTag("table").get(0);
-            Stream.of(rpta).forEach(e->System.out.println("--->"+e));
-            return getUser(table);
+            mostrarTablae(table);
+            Person p=
+             getUser(table);
+            return p.getAllName()==null?null:p;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
 
-        return new Person();
+//        return new Person();
+    }
+    public void mostrarTablae(Element table){
+        Elements rows = table.select("tr");
+        for (int i = 0; i < rows.size(); i++) { //first row is the col names so skip it.
+            Element row = rows.get(i);
+            Elements cols = row.select("td");
+            for (int j=0;j<cols.size();j++){
+                Element cell=cols.get(j);
+                System.out.println(i+"   "+j+"  "+cell.text());
+            }
+        }
+        System.out.println();
     }
     public Person getDni(String dni, File tessdata, String lang){
         System.out.println("buscando dni");
@@ -164,69 +177,42 @@ public class CaptchaResolv {
         }
         String rpta = "";
 
-        System.out.println("buscando dni");
         try {
             rpta = new PeticionCookie().peticionConCookieString(sb_url.toString(), "POST", parametros, (List<HttpCookie>)logeoSunnat.get(0));
             System.out.println(rpta);
             Document doc=Jsoup.parse(rpta);
             Elements td=doc.getElementsByTag("td");
 
-            return new Person().setDni(dni)
+            Person p= new Person().setDni(dni)
                     .setAddress(null)
-                    .setRucUser(td.get(7).text())
-                    .setAllName(td.get(8).text());
+                    .setRucUser(td.get(7).text().trim())
+                    .setAllName(td.get(8).text().trim());
+            if(p.getAllName()==null)
+                return null;
+            else return p;
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         }
-
-        return new Person();
     }
     private String getData(int x, int y, Element table){
         return table.select("tr").get(x).select("td").get(y).text();
     }
     private Person getUser(Element table){
+        if(getData(1,1,table).compareTo("UNIVERS. CENTROS EDUCAT. Y CULT.")==0)
+            return new Person()
+                .set_id(new ObjectId().toString())
+                .setAllName(getData(0,1,table).split("-")[1].trim())
+                .setRucUser(getData(0,1,table).split("-")[0].trim())
+        ;
+//        System.out.println("-----"+getData(0,1,table).split("-")[0].trim()+"-----");
         return new Person()
-                .set_id(new ObjectId())
-                .setAllName(getData(2,1,table).split("-")[1])
-                .setDni(getData(2,1,table).split("-")[0].split(" ")[1])
-                .setRucUser(getData(16,4,table).split("-")[0])
+                .set_id(new ObjectId().toString())
+                .setAllName(getData(0,1,table).split("-")[1].trim())
+                .setDni(getData(2,1,table).split("-")[0].split(" ")[1].trim())
+                .setRucUser(getData(0,1,table).split("-")[0].trim())
                 ;
     }
-    public String getDni(String dni){
-        StringBuilder sb_parametros = new StringBuilder();
-        sb_parametros.append("accion=buscar&");
-        sb_parametros.append("nuDni=");
-        sb_parametros.append(dni);
-        sb_parametros.append("&");
-        sb_parametros.append("imagen=");
-        sb_parametros.append(codReniec);
 
-        String parametros = sb_parametros.toString();
-        StringBuilder sb_url = new StringBuilder();
-        sb_url.append("https://cel.reniec.gob.pe/valreg/valreg.do;");
-
-        System.out.println(dni);
-        System.out.println(codReniec);
-        List<HttpCookie> cookies = (List<HttpCookie>) logeoReniec.get(0);
-        for (HttpCookie httpCookie : cookies) {
-            if (httpCookie.getName().compareToIgnoreCase("jsessionid") == 0) {
-                sb_url.append(httpCookie.getName());
-                sb_url.append("=");
-                sb_url.append(httpCookie.getValue());
-            }
-        }
-
-        String[]rpta = new String[0];
-        try {
-            rpta= new PeticionCookie().peticionConCookieStringSSL(sb_url.toString(), "POST", parametros, (List<HttpCookie>) logeoReniec.get(0));
-            java.util.stream.Stream.of(rpta).forEach(
-                    e->System.out.println("---->>"+e)
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rpta[0];
-    }
     public String read(File file, File TESSDATA, String Lang) {
 
         tesseract.TessBaseAPI api =new tesseract.TessBaseAPI();

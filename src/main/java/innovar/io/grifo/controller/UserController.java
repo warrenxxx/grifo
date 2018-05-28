@@ -20,8 +20,8 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 @Configuration
 public class UserController {
-    @Autowired
-    Jwt jwt;
+        @Autowired
+        Jwt jwt;
 
     @Bean
     RouterFunction UserfunctionSinFilter(UserService service){

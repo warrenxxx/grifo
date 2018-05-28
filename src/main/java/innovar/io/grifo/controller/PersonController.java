@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
@@ -22,6 +23,8 @@ public class PersonController {
     @Bean
     RouterFunction<ServerResponse> PersonfunctionSinFilter(PersonService service){
         return route(GET("/person/dni/{dni}"),service::getByDni)
-                .andRoute(GET("/person/ruc/{ruc}"),service::getByRuc);
+                .andRoute(GET("/person/ruc/{ruc}"),service::getByRuc)
+                .andRoute(POST("/person"),service::inertPerson)
+                .andRoute(GET("/person/text/{text}"),service::findPersonByText);
     }
 }
