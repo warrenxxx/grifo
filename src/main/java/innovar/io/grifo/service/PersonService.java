@@ -11,13 +11,10 @@ import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.captcha.CaptchaResolv;
 import innovar.io.grifo.entity.Person;
 import innovar.io.grifo.repository.PersonDao;
-import innovar.io.grifo.security.UserMetadate;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,8 +23,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 
-import static innovar.io.grifo.security.Jwt.OBJECT_USER;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Service

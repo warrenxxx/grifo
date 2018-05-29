@@ -33,19 +33,32 @@ public class ProductService {
     public Mono<ServerResponse> saveProduct(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
         return userDao.findById(idUser.toString()).flatMap(
-                user -> user.getRole().compareTo("user")==0?
+                user -> user.getRole().compareTo("user") == 0 ?
                         request.bodyToMono(Product.class).flatMap(
                                 product -> dao.save(product).flatMap(
-                                        productSved->AppResponse.AppResponseOk()
+                                        productSved -> AppResponse.AppResponseOk()
                                 )
-                        ):
+                        ) :
                         Mono.error(new AuthorizationException())
         ).onErrorResume(AppResponse::AppResponseError);
     }
+
+    public Mono<ServerResponse> eliminarProduct(ServerRequest request) {
+        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+        return userDao.findById(idUser.toString()).flatMap(
+                user -> user.getRole().compareTo("user") == 0 ?
+                        dao.removeBy_id(request.pathVariable("id")).flatMap(
+                                aVoid -> AppResponse.AppResponseOk()
+                        )
+                        :
+                        Mono.error(new AuthorizationException())
+        ).onErrorResume(AppResponse::AppResponseError);
+    }
+
     public Mono<ServerResponse> findProduct(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-        String p=request.pathVariable("text");
-        return dao.findAllByNameContainingOrCodeContainingOrDescriptionContaining(p,p,p).collectList().flatMap(AppResponse::AppResponseOk
+        String p = request.pathVariable("text");
+        return dao.findAllByNameContainingOrCodeContainingOrDescriptionContaining(p, p, p).collectList().flatMap(AppResponse::AppResponseOk
         ).onErrorResume(AppResponse::AppResponseError);
     }
 
