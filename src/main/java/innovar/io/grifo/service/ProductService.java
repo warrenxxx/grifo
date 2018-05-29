@@ -55,6 +55,18 @@ public class ProductService {
         ).onErrorResume(AppResponse::AppResponseError);
     }
 
+    public Mono<ServerResponse> eliminarProduct2(ServerRequest request) {
+        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+        return userDao.findById(idUser.toString()).flatMap(
+                user -> user.getRole().compareTo("user") == 0 ?
+                        dao.removeBy_id(request.pathVariable("id")).flatMap(
+                                aVoid -> AppResponse.AppResponseOk()
+                        )
+                        :
+                        Mono.error(new AuthorizationException())
+        ).onErrorResume(AppResponse::AppResponseError);
+    }
+
     public Mono<ServerResponse> findProduct(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
         String p = request.pathVariable("text");

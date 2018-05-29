@@ -7,6 +7,9 @@
  */
 package innovar.io.grifo.entity;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +19,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.*;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -52,6 +57,22 @@ class config{
         return new SpringSecurityAuditorAware();
     }
 }
+
+//@Configuration
+//class MongoConfiguration  {
+//
+//    public @Bean MongoClient mongoClient() {
+//        return new MongoClient("localhost");
+//    }
+//
+//    public @Bean
+//    MongoTemplate mongoTemplate() {
+//        return new MongoTemplate(mongoClient(), "mydatabase");
+//    }
+//
+//
+//
+//}
 class SpringSecurityAuditorAware implements AuditorAware<User> {
     @Override
     public Optional<User> getCurrentAuditor() {

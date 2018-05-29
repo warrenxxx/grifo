@@ -1,7 +1,10 @@
 package innovar.io.grifo;
 
 import innovar.io.grifo.config.captcha.CaptchaResolv;
+import innovar.io.grifo.entity.Person;
+import innovar.io.grifo.entity.Pojo;
 import innovar.io.grifo.repository.PersonDao;
+import innovar.io.grifo.repository.PojoDao;
 import innovar.io.grifo.security.CorsConfiguration;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -31,7 +34,7 @@ public class GrifoApplication {
     }
 
     @Bean
-    CommandLineRunner commandLineRunner(PersonDao dao){
+    CommandLineRunner commandLineRunner(PojoDao dao){
         return args -> {
 
 //            dao.findAllBy(TextCriteria.forDefaultLanguage().matchingPhrase("ESCA")).limitRequest(10).subscribe(System.out::println,null,()->System.out.print("termino"));
@@ -42,9 +45,8 @@ public class GrifoApplication {
 //            dao.findAllByAllNameContaining("ENEL",PageRequest.of(0,10)).subscribe(System.out::println,null,()->{
 //                System.out.println("termino");
 //            });
-            dao.findAllByAllNameContainingOrRucUserContaining("03","20",PageRequest.of(0,6)).subscribe(System.out::println,null,()->{
-                System.out.println("temino 2");
-            });
+
+         //   dao.insert(new Pojo().setEdad(45l)).subscribe(System.out::println);
         };
     }
 }

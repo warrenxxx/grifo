@@ -29,6 +29,7 @@ public class ProductController {
         return route(POST("/product"),service::saveProduct)
                 .andRoute(GET("/product/{text}"),service::findProduct)
                 .andRoute(GET("/product"),service::findAllProduct)
-                .andRoute(DELETE("/product/{id}"),service::eliminarProduct).filter(jwt::verifyFunctions);
+                .andRoute(DELETE("/product/{id}"),service::eliminarProduct)
+                .andRoute(GET("/product/delete/{id}"),service::eliminarProduct).filter(jwt::verifyFunctions);
     }
 }
