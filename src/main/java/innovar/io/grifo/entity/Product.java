@@ -20,6 +20,5 @@ public class Product {
 
     private String measureUnit;
     private Double unitaryValue;
-
 }
 

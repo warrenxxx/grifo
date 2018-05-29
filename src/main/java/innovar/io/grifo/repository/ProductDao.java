@@ -6,6 +6,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ProductDao extends ReactiveMongoRepository<Product,String> {
-    Flux<Product> findAllByNameContainingOrCodeContainingOrDescriptionContaining(String name,String code,String description);
+    Flux<Product> findAllByCodeContainingOrDescriptionContaining(String name,String code,String description);
     Mono<Long> removeBy_id(String id);
 }

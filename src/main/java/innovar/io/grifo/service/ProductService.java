@@ -58,7 +58,7 @@ public class ProductService {
     public Mono<ServerResponse> findProduct(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
         String p = request.pathVariable("text");
-        return dao.findAllByNameContainingOrCodeContainingOrDescriptionContaining(p, p, p).collectList().flatMap(AppResponse::AppResponseOk
+        return dao.findAllByCodeContainingOrDescriptionContaining(p, p, p).collectList().flatMap(AppResponse::AppResponseOk
         ).onErrorResume(AppResponse::AppResponseError);
     }
 
