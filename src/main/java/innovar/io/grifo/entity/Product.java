@@ -20,5 +20,8 @@ public class Product {
 
     private String measureUnit;
     private Double unitaryValue;
+
+    private Boolean isActive;
+    private Long stock;
 }
 

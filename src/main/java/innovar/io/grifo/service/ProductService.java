@@ -35,7 +35,7 @@ public class ProductService {
         return userDao.findById(idUser.toString()).flatMap(
                 user -> user.getRole().compareTo("user") == 0 ?
                         request.bodyToMono(Product.class).flatMap(
-                                product -> dao.save(product).flatMap(
+                                product -> dao.save(product.setIsActive(true).setStock(0L)).flatMap(
                                         productSved -> AppResponse.AppResponseOk()
                                 )
                         ) :
@@ -49,6 +49,34 @@ public class ProductService {
                 user -> user.getRole().compareTo("user") == 0 ?
                         dao.removeBy_id(request.pathVariable("id")).flatMap(
                                 aVoid -> AppResponse.AppResponseOk()
+                        )
+                        :
+                        Mono.error(new AuthorizationException())
+        ).onErrorResume(AppResponse::AppResponseError);
+    }
+    public Mono<ServerResponse> inabiliteProduct(ServerRequest request) {
+        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+        return userDao.findById(idUser.toString()).flatMap(
+                user -> user.getRole().compareTo("user") == 0 ?
+                        dao.findById(request.pathVariable("id")).flatMap(
+                                product -> dao.save(product.setIsActive(false)).flatMap(
+                                        productSaved->AppResponse.AppResponseOk()
+                                )
+
+                        )
+                        :
+                        Mono.error(new AuthorizationException())
+        ).onErrorResume(AppResponse::AppResponseError);
+    }
+    public Mono<ServerResponse> habliteProduct(ServerRequest request) {
+        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+        return userDao.findById(idUser.toString()).flatMap(
+                user -> user.getRole().compareTo("user") == 0 ?
+                        dao.findById(request.pathVariable("id")).flatMap(
+                                product -> dao.save(product.setIsActive(true)).flatMap(
+                                        productSaved->AppResponse.AppResponseOk()
+                                )
+
                         )
                         :
                         Mono.error(new AuthorizationException())

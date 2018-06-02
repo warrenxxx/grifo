@@ -30,6 +30,9 @@ public class ProductController {
                 .andRoute(GET("/product/{text}"),service::findProduct)
                 .andRoute(GET("/product"),service::findAllProduct)
                 .andRoute(DELETE("/product/{id}"),service::eliminarProduct)
-                .andRoute(GET("/product/delete/{id}"),service::eliminarProduct).filter(jwt::verifyFunctions);
+                .andRoute(GET("/product/delete/{id}"),service::eliminarProduct)
+                .andRoute(GET("/product/inhabilitar/{id}"),service::inabiliteProduct)
+                .andRoute(GET("/product/habilitar/{id}"),service::habliteProduct)
+                .filter(jwt::verifyFunctions);
     }
 }
