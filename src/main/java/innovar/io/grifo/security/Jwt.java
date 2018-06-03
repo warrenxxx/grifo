@@ -56,7 +56,7 @@ public class Jwt {
     public Mono<ServerResponse> verifyFunctions(ServerRequest req, HandlerFunction<ServerResponse> next) {
         return Flux.just(req.headers().header("Authorization").toArray(new String[0]))
                 .limitRequest(1)
-                .map(e -> JWT.decode(e))
+                .map(JWT::decode)
                 .flatMap(
                         jwt -> {
                             req.attributes().put(
