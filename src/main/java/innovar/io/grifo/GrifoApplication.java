@@ -36,14 +36,14 @@ public class GrifoApplication{
         return CorsConfiguration.corsFilter();
     }
 
-    @Bean
-    CommandLineRunner commandLineRunner(PojoDao dao){
-        return args -> {
-            dao.insert(new Pojo().setEdad(45l).setNombre("AMIR")).subscribe(System.out::println);
-        };
-    }
-    @Autowired
-    Environment environment;
+//    @Bean
+//    CommandLineRunner commandLineRunner(PojoDao dao){
+//        return args -> {
+//            dao.insert(new Pojo().setEdad(45l).setNombre("AMIR")).subscribe(System.out::println);
+//        };
+//    }
+//    @Autowired
+//    Environment environment;
 //
 //    @Bean
 //    public ReactiveMongoDatabaseFactory reactiveMongoDatabaseFactory(){

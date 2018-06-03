@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 
 /**
@@ -54,6 +55,10 @@ public class Jwt {
     }
 
     public Mono<ServerResponse> verifyFunctions(ServerRequest req, HandlerFunction<ServerResponse> next) {
+        System.out.println("warrena");
+        Stream.of(req.headers().header("Authorization").toArray(new String[0])).forEach(System.out::println);
+        System.out.println("warrenb");
+
         return Flux.just(req.headers().header("Authorization").toArray(new String[0]))
                 .limitRequest(1)
                 .map(JWT::decode)
