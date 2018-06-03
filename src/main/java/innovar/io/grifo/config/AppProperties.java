@@ -67,23 +67,18 @@ public class AppProperties {
         Properties prop = new Properties();
         InputStream input = null;
         String res = null;
-        System.out.println("-------------------->>>");
-        System.out.println(readAllProperties());
         try {
             input = AppProperties.class.getResourceAsStream(applicationProperties);
             prop.load(input);
-            System.out.println("-------------------->>>"+"dddd"+key);
+
             res = prop.getProperty(key);
         } catch (IOException ex) {
-            System.out.println("---------------------<>>>>>i1");
             ex.printStackTrace();
         } finally {
             if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    System.out.println("---------------------<>>>>>i2");
-
                     e.printStackTrace();
                 }
             }

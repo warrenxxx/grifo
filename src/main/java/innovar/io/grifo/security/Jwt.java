@@ -64,7 +64,7 @@ public class Jwt {
                 .map(JWT::decode)
                 .flatMap(
                         jwt -> {
-
+                            System.out.println();
                             req.attributes().put(
                                     OBJECT_USER,
                                     new UserMetadate(new ObjectId(jwt.getHeaderClaim(ID_USER).asString()),jwt.getHeaderClaim(ROLE_USER).asString())
