@@ -35,7 +35,7 @@ public class ProductService {
         return userDao.findById(idUser.toString()).flatMap(
                 user -> user.getRole().compareTo("user") == 0 ?
                         request.bodyToMono(Product.class).flatMap(
-                                product -> dao.save(product.setIsActive(true).setStock(0L)).flatMap(
+                                product -> dao.save(product.setIsActive(true)).flatMap(
                                         productSved -> AppResponse.AppResponseOk()
                                 )
                         ) :
