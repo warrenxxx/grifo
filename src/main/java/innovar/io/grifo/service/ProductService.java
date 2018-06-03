@@ -57,15 +57,18 @@ public class ProductService {
     public Mono<ServerResponse> inabiliteProduct(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
         return userDao.findById(idUser.toString()).flatMap(
-                user -> user.getRole().compareTo("user") == 0 ?
-                        dao.findById(request.pathVariable("id")).flatMap(
-                                product -> dao.save(product.setIsActive(false)).flatMap(
-                                        productSaved->AppResponse.AppResponseOk()
-                                )
+                user -> {
+                    System.out.println(user);
+                    return user.getRole().compareTo("user") == 0 ?
+                            dao.findById(request.pathVariable("id")).flatMap(
+                                    product -> dao.save(product.setIsActive(false)).flatMap(
+                                            productSaved->AppResponse.AppResponseOk()
+                                    )
 
-                        )
-                        :
-                        Mono.error(new AuthorizationException())
+                            )
+                            :
+                            Mono.error(new AuthorizationException());
+                }
         ).onErrorResume(AppResponse::AppResponseError);
     }
     public Mono<ServerResponse> habliteProduct(ServerRequest request) {
