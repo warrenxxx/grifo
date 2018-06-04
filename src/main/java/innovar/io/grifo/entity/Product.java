@@ -22,6 +22,7 @@ public class Product {
     private Double unitaryValue;
 
     private Boolean isActive;
-        private Long stock;
+    private Long stock;
+
 }
 

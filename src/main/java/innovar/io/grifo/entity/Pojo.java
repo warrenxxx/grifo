@@ -52,10 +52,10 @@ public class Pojo {
 @Configuration
 @EnableMongoAuditing
 class config{
-    @Bean
-    public AuditorAware<User> myAuditorProvider() {
-        return new SpringSecurityAuditorAware();
-    }
+            @Bean
+            public AuditorAware<User> myAuditorProvider() {
+                return new SpringSecurityAuditorAware();
+            }
 }
 
 //@Configuration
