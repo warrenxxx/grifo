@@ -9,8 +9,8 @@ package innovar.io.grifo.service;
 
 import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.ExceptionHandling.UserNotFoundException;
-//import innovar.io.grifo.config.models.Controller;
-//import innovar.io.grifo.config.models.NodeController;
+import innovar.io.grifo.config.models.Controller;
+import innovar.io.grifo.config.models.NodeController;
 import innovar.io.grifo.dto.LoginDto;
 import innovar.io.grifo.dto.RequestMovementDto;
 import innovar.io.grifo.dto.RequestUserDto;
@@ -19,11 +19,11 @@ import innovar.io.grifo.entity.*;
 import innovar.io.grifo.repository.EmployesDao;
 import innovar.io.grifo.repository.ProductDao;
 import innovar.io.grifo.security.UserMetadate;
-//import javafx.fxml.FXMLLoader;
-//import javafx.fxml.Initializable;
-//import javafx.fxml.JavaFXBuilderFactory;
-//import javafx.print.PrinterJob;
-//import javafx.scene.Node;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.fxml.JavaFXBuilderFactory;
+import javafx.print.PrinterJob;
+import javafx.scene.Node;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
@@ -136,61 +136,61 @@ public class EmployesService {
         ).onErrorResume(e -> AppResponse.AppResponseError(e));
     }
 
-//    public Mono<ServerResponse> newPrint(ServerRequest request) {
-//
-//        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-//        return request.bodyToMono(RequestMovementDto.class).map(
-//                movement -> {
-//
-//                    try {
-//                        NodeController nodeController = replaceSceneContent("/sample.fxml");
-//                        Controller c = (Controller) nodeController.getController();
-//                        c.addAllItems(movement.getMovementDetails())
-//                                .setDtpFecha(movement.getDate())
-//                                .setLblDireccion(movement.getAddres())
-//                                .setLblNombre(movement.getName())
-//                                .setLblRuc(movement.getDocumentNumber());
-//                        print(nodeController.getNode());
-//                    } catch (Exception e1) {
-//                        e1.printStackTrace();
-//                    }
-//
-//                    return movement;
-//                }
-//        ).flatMap(e -> AppResponse.AppResponseOk())
-//
-//                .onErrorResume(e -> AppResponse.AppResponseError(e));
-//    }
-//
-//
-//    private NodeController replaceSceneContent(String fxml) throws Exception {
-//
-//        FXMLLoader loader = new FXMLLoader();
-//        InputStream in = getClass().getResourceAsStream(fxml);
-//
-//        loader.setBuilderFactory(new JavaFXBuilderFactory());
-//        loader.setLocation(getClass().getResource(fxml));
-//        Node page;
-//
-//        try {
-//
-//            page =  loader.load(in);
-//
-//        } finally {
-//            in.close();
-//        }
-//        return new NodeController((Initializable) loader.getController(), page);
-//    }
-//
-//    private void print(Node node) throws InterruptedException {
-//        PrinterJob job = PrinterJob.createPrinterJob();
-//        if (job != null) {
-//            boolean printed = job.printPage(node);
-//            Thread.sleep(500);
-//            if (printed) {
-//                job.endJob();
-//                System.out.println("imprimio");
-//            }
-//        }
-//    }
+    public Mono<ServerResponse> newPrint(ServerRequest request) {
+
+        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+        return request.bodyToMono(RequestMovementDto.class).map(
+                movement -> {
+
+                    try {
+                        NodeController nodeController = replaceSceneContent("/sample.fxml");
+                        Controller c = (Controller) nodeController.getController();
+                        c.addAllItems(movement.getMovementDetails())
+                                .setDtpFecha(movement.getDate())
+                                .setLblDireccion(movement.getAddres())
+                                .setLblNombre(movement.getName())
+                                .setLblRuc(movement.getDocumentNumber());
+                        print(nodeController.getNode());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+
+                    return movement;
+                }
+        ).flatMap(e -> AppResponse.AppResponseOk())
+
+                .onErrorResume(e -> AppResponse.AppResponseError(e));
+    }
+
+
+    private NodeController replaceSceneContent(String fxml) throws Exception {
+
+        FXMLLoader loader = new FXMLLoader();
+        InputStream in = getClass().getResourceAsStream(fxml);
+
+        loader.setBuilderFactory(new JavaFXBuilderFactory());
+        loader.setLocation(getClass().getResource(fxml));
+        Node page;
+
+        try {
+
+            page =  loader.load(in);
+
+        } finally {
+            in.close();
+        }
+        return new NodeController((Initializable) loader.getController(), page);
+    }
+
+    private void print(Node node) throws InterruptedException {
+        PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            boolean printed = job.printPage(node);
+            Thread.sleep(500);
+            if (printed) {
+                job.endJob();
+                System.out.println("imprimio");
+            }
+        }
+    }
 }
