@@ -52,7 +52,4 @@ public class UserService {
                 ).switchIfEmpty(Mono.error(new UserNotFoundException()))
         ).onErrorResume(e->AppResponse.AppResponseError(e));
     }
-
-
-
 }

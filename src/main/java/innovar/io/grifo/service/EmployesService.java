@@ -85,7 +85,6 @@ public class EmployesService {
 
     public Mono<ServerResponse> newTicket(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-        System.out.println(idUser);
         return request.bodyToMono(RequestMovementDto.class).flatMap(
                 movement -> reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
                         new ObjectId().toString(),

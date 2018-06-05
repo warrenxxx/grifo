@@ -198,7 +198,7 @@ public class CaptchaResolv {
         return table.select("tr").get(x).select("td").get(y).text();
     }
     private Person getUser(Element table){
-        if(getData(1,1,table).compareTo("UNIVERS. CENTROS EDUCAT. Y CULT.")==0)
+        if(getData(0,1,table).split("-")[0].trim().substring(0,2).compareTo("20")==0)
             return new Person()
                 .set_id(new ObjectId().toString())
                 .setAllName(getData(0,1,table).split("-")[1].trim())
