@@ -24,7 +24,7 @@ public class GrifoApplication{
 
     public static void main(String[] args) {
         SpringApplication.run(GrifoApplication.class, args);
-//        com.sun.javafx.application.PlatformImpl.startup(()->{});
+        com.sun.javafx.application.PlatformImpl.startup(()->{});
     }
 
     @Bean
