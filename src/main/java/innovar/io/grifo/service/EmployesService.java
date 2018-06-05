@@ -15,11 +15,9 @@ import innovar.io.grifo.dto.LoginDto;
 import innovar.io.grifo.dto.RequestMovementDto;
 import innovar.io.grifo.dto.RequestUserDto;
 import innovar.io.grifo.dto.ResponseUserDto;
-import innovar.io.grifo.entity.Employe;
-import innovar.io.grifo.entity.Movement;
-import innovar.io.grifo.entity.MovementDetail;
-import innovar.io.grifo.entity.User;
+import innovar.io.grifo.entity.*;
 import innovar.io.grifo.repository.EmployesDao;
+import innovar.io.grifo.repository.ProductDao;
 import innovar.io.grifo.security.UserMetadate;
 //import javafx.fxml.FXMLLoader;
 //import javafx.fxml.Initializable;
@@ -53,6 +51,10 @@ public class EmployesService {
 
     @Autowired
     ReactiveMongoOperations reactiveMongoOperations;
+
+    @Autowired
+    ProductDao productDao;
+
 
     public Mono<ServerResponse> createEmployes(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
@@ -93,12 +95,21 @@ public class EmployesService {
                         "dni",
                         Stream.of(movement.getMovementDetails()).map(
                                 e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice())
+                        ).map(
+                                e->{
+                                    reactiveMongoOperations.update(Product.class)
+                                            .matching(new Query(where("_id").is(e.get_idProduct())))
+                                            .apply(new Update().inc("stock",e.getQuantityGal()*-1))
+                                            .first().subscribe();
+                                    return e;
+                                }
                         ).toArray(size -> new MovementDetail[size])
                 ))).first().flatMap(
                         updateResult -> AppResponse.AppResponseOk()
                 )
         ).onErrorResume(e -> AppResponse.AppResponseError(e));
     }
+
 
     public Mono<ServerResponse> newBill(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
@@ -110,6 +121,14 @@ public class EmployesService {
                         "ruc",
                         Stream.of(movement.getMovementDetails()).map(
                                 e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice())
+                        ).map(
+                                e->{
+                                    reactiveMongoOperations.update(Product.class)
+                                            .matching(new Query(where("_id").is(e.get_idProduct())))
+                                            .apply(new Update().inc("stock",e.getQuantityGal()*-1))
+                                            .first().subscribe();
+                                    return e;
+                                }
                         ).toArray(size -> new MovementDetail[size])
                 ))).first().flatMap(
                         updateResult -> AppResponse.AppResponseOk()
