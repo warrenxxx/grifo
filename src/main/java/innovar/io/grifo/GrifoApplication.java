@@ -33,6 +33,7 @@ public class GrifoApplication{
     CommandLineRunner runner(EmployesService service){
         return args -> {
             service.getNumOFBill().subscribe(System.out::println);
+            service.getDocumentById("5b171dc3086230359026d6e0").subscribe(System.out::println);
         };
     }
     @Bean

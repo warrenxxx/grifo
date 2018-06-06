@@ -214,13 +214,13 @@ public class EmployesService {
     }
     public Mono<ServerResponse> getAllTickets(ServerRequest request) {
         return findAllTickets().map(
-                e->new ResponseMovementDto(e.getId(),e.getDate(),e.getName(),e.getNumberOfDocument())
+                e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument())
         ).collectList().flatMap(AppResponse::AppResponseOk);
     }
 
     public Mono<ServerResponse> getAllBills(ServerRequest request) {
         return findAllBills().map(
-                e->new ResponseMovementDto(e.getId(),e.getDate(),e.getName(),e.getNumberOfDocument())
+                e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument())
         ).collectList().flatMap(
                 AppResponse::AppResponseOk
         );
@@ -229,15 +229,16 @@ public class EmployesService {
         return null;
     }
     public Mono<ServerResponse> getTicketById(ServerRequest request) {
+        System.out.println(request.pathVariable("id"));
         return getDocumentById(request.pathVariable("id")).flatMap(
-                e->AppResponse.AppResponseOk(e.getMovementDetails())
-        ).switchIfEmpty(Mono.error(new ObjetcNotFoundException()));
+                e->AppResponse.AppResponseOk(e.getMovementDetails()[0].setIdToString())
+        ).switchIfEmpty(Mono.error(new UserNotFoundException()));
     }
 
     public Mono<ServerResponse> getBillById(ServerRequest request) {
         return getDocumentById(request.pathVariable("id")).flatMap(
-                e->AppResponse.AppResponseOk(e.getMovementDetails())
-        ).switchIfEmpty(Mono.error(new ObjetcNotFoundException()));
+                e->AppResponse.AppResponseOk(e.getMovementDetails()[0].setIdToString())
+        ).switchIfEmpty(Mono.error(new UserNotFoundException()));
     }
 
 
@@ -252,6 +253,13 @@ public class EmployesService {
     }
 
     public Mono<Movement> getDocumentById(String id){
+//        reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+//                Aggregation.unwind("movements"),
+//                Aggregation.replaceRoot("movements"),
+//                Aggregation.match(where("_id").is(new ObjectId(id)))
+//        ),"employe",Movement.class).collectList().subscribe(System.out::println);
+
+//        return Mono.just(new Movement());
         return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
                 Aggregation.unwind("movements"),
                 Aggregation.replaceRoot("movements"),
@@ -279,7 +287,11 @@ public class EmployesService {
 
         ),"employe",NumOfBill.class).map(e->5l).publishNext();
     }
+    public Mono<Long>getNumOfDocument(String idEmploye,String idDocument){
+        reactiveMongoOperations.aggregate(Aggregation.newAggregation(
 
+        ),"employe",NumOfBill.class).map(e->5l).publishNext();
+    }
 
 
 }
