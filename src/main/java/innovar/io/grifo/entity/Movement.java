@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -25,5 +26,6 @@ public class Movement {
     private String numberOfDocument;
     private String typeOfDocument;
     private MovementDetail[] movementDetails;
-
+    private NumberOfPrint number[];
+    private String name;
 }

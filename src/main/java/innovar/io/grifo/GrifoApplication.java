@@ -7,15 +7,12 @@ import innovar.io.grifo.config.captcha.CaptchaResolv;
 import innovar.io.grifo.entity.Pojo;
 import innovar.io.grifo.repository.PojoDao;
 import innovar.io.grifo.security.CorsConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
+import innovar.io.grifo.service.EmployesService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
-import org.springframework.data.mongodb.ReactiveMongoDatabaseFactory;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
-import org.springframework.data.mongodb.core.SimpleReactiveMongoDatabaseFactory;
+
 import org.springframework.web.server.WebFilter;
 
 
@@ -31,7 +28,15 @@ public class GrifoApplication{
     CaptchaResolv captchaResolv(){
         return new CaptchaResolv();
     };
+
     @Bean
+    CommandLineRunner runner(EmployesService service){
+        return args -> {
+            service.getNumOFBill().subscribe(System.out::println);
+        };
+    }
+    @Bean
+
     public WebFilter corsFilter() {
         return CorsConfiguration.corsFilter();
     }

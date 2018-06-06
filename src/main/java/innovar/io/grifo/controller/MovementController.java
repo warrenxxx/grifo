@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
@@ -27,6 +28,12 @@ public class MovementController {
         return route(POST("/movement/ticker"),service::newTicket)
                 .andRoute(POST("/movement/bill"),service::newBill)
                 .andRoute(POST("/movement/print"),service::newPrint)
+                .andRoute(GET("/movement/anular/bill/{id}"),service::anulateBill)
+                .andRoute(GET("/movement/anular/ticket/{id}"),service::anulateBill)
+                .andRoute(GET("/movement/tickets"),service::getAllTickets)
+                .andRoute(GET("/movement/bills"),service::getAllBills)
+                .andRoute(GET("/movement/ticket/{id}"),service::getTicketById)
+                .andRoute(GET("/movement/bills/{id}"),service::getBillById)
                 .filter(jwt::verifyFunctions)
                 ;
     }

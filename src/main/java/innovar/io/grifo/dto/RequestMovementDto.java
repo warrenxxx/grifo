@@ -32,5 +32,6 @@ public class RequestMovementDto {
     private String documentNumber;
     private String addres;
     private Double igv;
+    private Boolean isTicket;
     private RequestMovementDetailDto[] movementDetails;
 }

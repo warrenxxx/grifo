@@ -11,10 +11,7 @@ import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.ExceptionHandling.UserNotFoundException;
 import innovar.io.grifo.config.models.Controller;
 import innovar.io.grifo.config.models.NodeController;
-import innovar.io.grifo.dto.LoginDto;
-import innovar.io.grifo.dto.RequestMovementDto;
-import innovar.io.grifo.dto.RequestUserDto;
-import innovar.io.grifo.dto.ResponseUserDto;
+import innovar.io.grifo.dto.*;
 import innovar.io.grifo.entity.*;
 import innovar.io.grifo.repository.EmployesDao;
 import innovar.io.grifo.repository.ProductDao;
@@ -24,14 +21,18 @@ import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
@@ -86,53 +87,70 @@ public class EmployesService {
     }
 
     public Mono<ServerResponse> newTicket(ServerRequest request) {
+
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-        return request.bodyToMono(RequestMovementDto.class).flatMap(
-                movement -> reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
-                        new ObjectId().toString(),
-                        movement.getDate(),
-                        movement.getDocumentNumber(),
-                        "dni",
-                        Stream.of(movement.getMovementDetails()).map(
-                                e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice())
-                        ).map(
-                                e->{
-                                    reactiveMongoOperations.update(Product.class)
-                                            .matching(new Query(where("_id").is(e.get_idProduct())))
-                                            .apply(new Update().inc("stock",e.getQuantityGal()*-1))
-                                            .first().subscribe();
-                                    return e;
-                                }
-                        ).toArray(size -> new MovementDetail[size])
-                ))).first().flatMap(
-                        updateResult -> AppResponse.AppResponseOk()
-                )
-        ).onErrorResume(e -> AppResponse.AppResponseError(e));
+        return
+                getNumOFBill().flatMap(
+                        total ->
+                                request.bodyToMono(RequestMovementDto.class).flatMap(
+                                        movement -> {
+                                            System.out.println("llego aca");
+                                            return reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
+                                                    new ObjectId().toString(),
+                                                    movement.getDate(),
+                                                    movement.getDocumentNumber(),
+                                                    "dni",
+                                                    Stream.of(movement.getMovementDetails()).map(
+                                                            e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice()))
+                                                            .map(
+                                                                    e -> {
+                                                                        System.out.println("sige llegando aca");
+                                                                        reactiveMongoOperations.update(Product.class)
+                                                                                .matching(new Query(where("_id").is(e.get_idProduct())))
+                                                                                .apply(new Update().inc("stock", e.getQuantityGal() * -1))
+                                                                                .first().subscribe();
+                                                                        return e;
+                                                                    }
+                                                            )
+                                                            .toArray(size -> new MovementDetail[size]),
+                                                    new NumberOfPrint[]{
+                                                            new NumberOfPrint(total + 1, true)
+                                                    },movement.getName()
+                                            ))).first().flatMap(
+                                                    updateResult -> AppResponse.AppResponseOk()
+                                            );
+                                        }
+                                )
+                ).onErrorResume(AppResponse::AppResponseError);
     }
 
 
     public Mono<ServerResponse> newBill(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-        return request.bodyToMono(RequestMovementDto.class).flatMap(
-                movement -> reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
-                        new ObjectId().toString(),
-                        movement.getDate(),
-                        movement.getDocumentNumber(),
-                        "ruc",
-                        Stream.of(movement.getMovementDetails()).map(
-                                e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice())
-                        ).map(
-                                e->{
-                                    reactiveMongoOperations.update(Product.class)
-                                            .matching(new Query(where("_id").is(e.get_idProduct())))
-                                            .apply(new Update().inc("stock",e.getQuantityGal()*-1))
-                                            .first().subscribe();
-                                    return e;
-                                }
-                        ).toArray(size -> new MovementDetail[size])
-                ))).first().flatMap(
-                        updateResult -> AppResponse.AppResponseOk()
-                )
+        return getNumOFBill().flatMap(
+                total -> request.bodyToMono(RequestMovementDto.class).flatMap(
+                        movement -> reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
+                                new ObjectId().toString(),
+                                movement.getDate(),
+                                movement.getDocumentNumber(),
+                                "ruc",
+                                Stream.of(movement.getMovementDetails()).map(
+                                        e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice())
+                                ).map(
+                                        e -> {
+                                            reactiveMongoOperations.update(Product.class)
+                                                    .matching(new Query(where("_id").is(e.get_idProduct())))
+                                                    .apply(new Update().inc("stock", e.getQuantityGal() * -1))
+                                                    .first().subscribe();
+                                            return e;
+                                        }
+                                ).toArray(size -> new MovementDetail[size]),
+                                new NumberOfPrint[]{
+                                        new NumberOfPrint(total + 1, true)
+                                },movement.getName()
+                        ))).first().flatMap(
+                                updateResult -> AppResponse.AppResponseOk()
+                        ))
         ).onErrorResume(e -> AppResponse.AppResponseError(e));
     }
 
@@ -174,7 +192,7 @@ public class EmployesService {
 
         try {
 
-            page =  loader.load(in);
+            page = loader.load(in);
 
         } finally {
             in.close();
@@ -193,4 +211,67 @@ public class EmployesService {
             }
         }
     }
+    public Mono<ServerResponse> getAllTickets(ServerRequest request) {
+        return getAllTickets().map(
+                e->new ResponseMovementDto(e.getId(),e.getDate(),e.getName(),e.getNumberOfDocument())
+        ).collectList().flatMap(AppResponse::AppResponseOk);
+    }
+
+    public Mono<ServerResponse> getAllBills(ServerRequest request) {
+        return getAllBills().map(
+                e->new ResponseMovementDto(e.getId(),e.getDate(),e.getName(),e.getNumberOfDocument())
+        ).collectList().flatMap(
+                AppResponse::AppResponseOk
+        );
+    }
+    public Mono<ServerResponse> anulateBill(ServerRequest request) {
+//          return reactiveMongoOperations.update(Employe.class).matching(request.pathVariable("id"));
+        return null;
+    }
+    public Mono<ServerResponse> getTicketById(ServerRequest request) {
+        return getDocumentById(request.pathVariable("id")).flatMap(
+                e->AppResponse.AppResponseOk(e.getMovementDetails())
+        );
+    }
+
+    public Mono<ServerResponse> getBillById(ServerRequest request) {
+        return getDocumentById(request.pathVariable("id")).flatMap(
+                e->AppResponse.AppResponseOk(e.getMovementDetails())
+        );
+    }
+
+
+    public Mono<Long> getNumOFBill() {
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+                Aggregation.unwind("movements"),
+                Aggregation.replaceRoot("movements"),
+                Aggregation.unwind("movementDetails"),
+                Aggregation.replaceRoot("movementDetails"),
+                Aggregation.count().as("total")
+        ), "employe", NumOfBill.class).map(e -> e.getTotal()).publishNext().switchIfEmpty(Mono.just(0L));
+    }
+
+    public Mono<Movement> getDocumentById(String id){
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+                Aggregation.unwind("movements"),
+                Aggregation.replaceRoot("movements"),
+                Aggregation.match(where("_id").is(new ObjectId(id)))
+        ),"employe",Movement.class).publishNext();
+    }
+
+    public Mono<Movement> getAllBills(){
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+                Aggregation.unwind("movements"),
+                Aggregation.replaceRoot("movements"),
+                Aggregation.match(where("typeOfDocument").is("ruc"))
+        ),"employe",Movement.class).publishNext();
+    }
+
+
+
+}
+
+@Data
+class NumOfBill {
+    Long total;
 }
