@@ -34,6 +34,7 @@ public class GrifoApplication{
         return args -> {
             service.getNumOFBill().subscribe(System.out::println);
             service.getDocumentById("5b171dc3086230359026d6e0").subscribe(System.out::println);
+            service.getNumOfDocument("5b171c730862304cbce09370","5b171dc5086230359026d6e1").subscribe(System.out::println);
         };
     }
     @Bean

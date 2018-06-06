@@ -22,11 +22,13 @@ import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
+import jdk.management.resource.internal.ApproverGroup;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -90,14 +92,16 @@ public class EmployesService {
     public Mono<ServerResponse> newTicket(ServerRequest request) {
 
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+
+        ObjectId id=new ObjectId();
         return
                 getNumOFBill().flatMap(
                         total ->
                                 request.bodyToMono(RequestMovementDto.class).flatMap(
-                                        movement -> {
-                                            System.out.println("llego aca");
-                                            return reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
-                                                    new ObjectId().toString(),
+                                        movement ->
+
+                                            reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
+                                                    id.toString(),
                                                     movement.getDate(),
                                                     movement.getDocumentNumber(),
                                                     "dni",
@@ -105,7 +109,7 @@ public class EmployesService {
                                                             e -> new MovementDetail(new ObjectId(e.getIdProduct()), e.getQuantityGal(), e.getQuantitySol(), 0.0, e.getUnitaryPrice()))
                                                             .map(
                                                                     e -> {
-                                                                        System.out.println("sige llegando aca");
+
                                                                         reactiveMongoOperations.update(Product.class)
                                                                                 .matching(new Query(where("_id").is(e.get_idProduct())))
                                                                                 .apply(new Update().inc("stock", e.getQuantityGal() * -1))
@@ -118,9 +122,9 @@ public class EmployesService {
                                                             new NumberOfPrint(total + 1, true)
                                                     },movement.getName()
                                             ))).first().flatMap(
-                                                    updateResult -> AppResponse.AppResponseOk()
-                                            );
-                                        }
+                                                    updateResult -> AppResponse.AppResponseOk(id.toString())
+                                            )
+
                                 )
                 ).onErrorResume(AppResponse::AppResponseError);
     }
@@ -128,10 +132,11 @@ public class EmployesService {
 
     public Mono<ServerResponse> newBill(ServerRequest request) {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+        ObjectId id=new ObjectId();
         return getNumOFBill().flatMap(
                 total -> request.bodyToMono(RequestMovementDto.class).flatMap(
                         movement -> reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
-                                new ObjectId().toString(),
+                                id.toString(),
                                 movement.getDate(),
                                 movement.getDocumentNumber(),
                                 "ruc",
@@ -150,7 +155,7 @@ public class EmployesService {
                                         new NumberOfPrint(total + 1, true)
                                 },movement.getName()
                         ))).first().flatMap(
-                                updateResult -> AppResponse.AppResponseOk()
+                                updateResult -> AppResponse.AppResponseOk(id.toString())
                         ))
         ).onErrorResume(e -> AppResponse.AppResponseError(e));
     }
@@ -226,7 +231,7 @@ public class EmployesService {
         );
     }
     public Mono<ServerResponse> anulateBill(ServerRequest request) {
-        return null;
+        return anulate(request);
     }
     public Mono<ServerResponse> getTicketById(ServerRequest request) {
         System.out.println(request.pathVariable("id"));
@@ -282,18 +287,33 @@ public class EmployesService {
         ),"employe",Movement.class);
     }
 
-    public Mono<Long>anulate(String idEmploye,String idDocument){
-        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+    public Mono<ServerResponse>anulate(ServerRequest request){
+        String idEmploye=((UserMetadate) request.attributes().get(OBJECT_USER)).getId().toString();
+        String idDocument=request.pathVariable("id");
 
-        ),"employe",NumOfBill.class).map(e->5l).publishNext();
+
+        return getNumOFBill().flatMap(
+                lastNum->
+          getNumOfDocument(idEmploye,idDocument).flatMap(
+                numDoc->reactiveMongoOperations.update(Employe.class)
+                        .matching(new Query( where("_id")
+                                .is(new ObjectId(idEmploye))))
+                        .apply(new Update().push("movements.0.number",new NumberOfPrint(lastNum,true)))
+                        .first()
+                        .flatMap(e->AppResponse.AppResponseOk())
+        ));
     }
     public Mono<Long>getNumOfDocument(String idEmploye,String idDocument){
-        reactiveMongoOperations.aggregate(Aggregation.newAggregation(
-
-        ),"employe",NumOfBill.class).map(e->5l).publishNext();
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+            Aggregation.match(where("_id").is(new ObjectId(idEmploye))),
+                Aggregation.project().and(ArrayOperators.IndexOfArray.arrayOf("movements._id").indexOf(new ObjectId(idDocument))).as("total")
+        ),"employe",NumOfBill.class).map(e->e.getTotal()).publishNext();
     }
 
 
+    public Mono<ServerResponse> anulateTicket(ServerRequest request) {
+        return anulate(request);
+    }
 }
 
 @Data

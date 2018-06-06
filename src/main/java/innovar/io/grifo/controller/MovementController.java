@@ -29,7 +29,7 @@ public class MovementController {
                 .andRoute(POST("/movement/bill"),service::newBill)
                 .andRoute(POST("/movement/print"),service::newPrint)
                 .andRoute(GET("/movement/anular/bill/{id}"),service::anulateBill)
-                .andRoute(GET("/movement/anular/ticket/{id}"),service::anulateBill)
+                .andRoute(GET("/movement/anular/ticket/{id}"),service::anulateTicket)
                 .andRoute(GET("/movement/tickets"),service::getAllTickets)
                 .andRoute(GET("/movement/bills"),service::getAllBills)
                 .andRoute(GET("/movement/ticket/{id}"),service::getTicketById)
