@@ -6,6 +6,7 @@ import com.mongodb.reactivestreams.client.MongoClients;
 import innovar.io.grifo.config.captcha.CaptchaResolv;
 import innovar.io.grifo.entity.Pojo;
 import innovar.io.grifo.repository.PojoDao;
+import innovar.io.grifo.repository.UserDao;
 import innovar.io.grifo.security.CorsConfiguration;
 import innovar.io.grifo.service.EmployesService;
 import org.springframework.boot.CommandLineRunner;
@@ -30,11 +31,14 @@ public class GrifoApplication{
     };
 
     @Bean
-    CommandLineRunner runner(EmployesService service){
+    CommandLineRunner runner(EmployesService service , UserDao userDao){
         return args -> {
             service.getNumOFBill().subscribe(System.out::println);
             service.getDocumentById("5b171dc3086230359026d6e0").subscribe(System.out::println);
             service.getNumOfDocument("5b171c730862304cbce09370","5b171dc5086230359026d6e1").subscribe(System.out::println);
+
+            userDao.existsById("5b171696086230453c397b4c").subscribe(System.out::println);
+            userDao.countByPasswordAndUserName("admin","admin").subscribe(System.out::println);
         };
     }
     @Bean

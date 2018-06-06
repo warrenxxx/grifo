@@ -8,6 +8,7 @@
 
 package innovar.io.grifo.config.models;
 import innovar.io.grifo.dto.RequestMovementDetailDto;
+import innovar.io.grifo.entity.MovementDetail;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,6 +18,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -79,15 +82,17 @@ public class Controller implements Initializable {
         this.cPrecioUnitario.setCellValueFactory(new PropertyValueFactory("precioUnitario"));
         this.tbTable.setItems(observableList);
     }
-    public Controller addAllItems(RequestMovementDetailDto... details){
+    @Autowired
+    ReactiveMongoOperations operations;
+    public Controller addAllItems(MovementDetail... details){
         this.observableList.clear();
-        for(RequestMovementDetailDto x:details){
+        for(MovementDetail x:details){
             this.observableList.add(
                     new Detail(
-                            x.getCod(),
+                            "codig",
                             String.valueOf(x.getQuantityGal()),
-                            x.getDescription(),
-                            String.valueOf(x.getUnitaryPrice()),
+                            "description",
+                            String.valueOf("455"),
                             String.valueOf(x.getQuantitySol())
                     )
             );

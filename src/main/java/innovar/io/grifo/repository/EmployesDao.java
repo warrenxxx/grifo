@@ -13,4 +13,5 @@ import reactor.core.publisher.Mono;
 
 public interface EmployesDao extends ReactiveMongoRepository<Employe,String> {
     public Mono<Employe> getUserByPasswordAndUserName(String password, String userName);
+    public Mono<Long> countByPasswordAndUserName(String password,String userName);
 }

@@ -27,7 +27,7 @@ public class MovementController {
     RouterFunction Employefunction(EmployesService service){
         return route(POST("/movement/ticker"),service::newTicket)
                 .andRoute(POST("/movement/bill"),service::newBill)
-                .andRoute(POST("/movement/print"),service::newPrint)
+                .andRoute(GET("/movement/print/{id}"),service::newPrint)
                 .andRoute(GET("/movement/anular/bill/{id}"),service::anulateBill)
                 .andRoute(GET("/movement/anular/ticket/{id}"),service::anulateTicket)
                 .andRoute(GET("/movement/tickets"),service::getAllTickets)

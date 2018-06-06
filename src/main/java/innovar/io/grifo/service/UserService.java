@@ -12,6 +12,7 @@ import innovar.io.grifo.config.ExceptionHandling.UserNotFoundException;
 import innovar.io.grifo.dto.LoginDto;
 import innovar.io.grifo.dto.RequestUserDto;
 import innovar.io.grifo.dto.ResponseUserDto;
+import innovar.io.grifo.repository.EmployesDao;
 import innovar.io.grifo.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
@@ -28,6 +29,9 @@ public class UserService {
     UserDao dao;
 
 
+    @Autowired
+    EmployesDao employesDao;
+
     public Mono<ServerResponse> userCreate(ServerRequest request){
         return  request.bodyToMono(RequestUserDto.class).flatMap(
                 requestUserDto->dao.insert(requestUserDto.getUser()).flatMap(
@@ -39,17 +43,40 @@ public class UserService {
 
     public Mono<ServerResponse> login(ServerRequest request){
         return  request.bodyToMono(LoginDto.class).flatMap(
-                loginDto -> dao.getUserByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
-                        user ->AppResponse.AppResponseOk(new ResponseUserDto(
-                                user.get_id(),
-                                user.getAllName(),
-                                user.getBirthDate(),
-                                user.getEmail(),
-                                user.getUserName(),
-                                TO_JWT(user.get_id(),user.getRole()),
-                                user.getCompany()
-                        ))
-                ).switchIfEmpty(Mono.error(new UserNotFoundException()))
+                loginDto ->dao.countByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
+                        existUser->{
+                            System.out.println(existUser);
+                            return existUser>0?
+                                    dao.getUserByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
+                                            user ->{
+                                                System.out.println(user);
+                                                return AppResponse.AppResponseOk(new ResponseUserDto(
+                                                        user.get_id(),
+                                                        user.getAllName(),
+                                                        user.getBirthDate(),
+                                                        user.getEmail(),
+                                                        user.getUserName(),
+                                                        TO_JWT(user.get_id(),user.getRole()),
+                                                        user.getCompany()
+                                                ));
+                                            })
+                                    :employesDao.countByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
+                                    existEmploye->existEmploye>0?
+                                            employesDao.getUserByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
+                                                    employe -> AppResponse.AppResponseOk(new ResponseUserDto(
+                                                            employe.get_id(),
+                                                            employe.getAllName(),
+                                                            employe.getBirthDate(),
+                                                            employe.getEmail(),
+                                                            employe.getUserName(),
+                                                            TO_JWT(employe.get_id(),"employe"),
+                                                            null
+                                                    ))
+                                            ):
+                                            Mono.error(new UserNotFoundException())
+                            );
+                        }
+                )
         ).onErrorResume(e->AppResponse.AppResponseError(e));
     }
 }

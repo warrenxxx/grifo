@@ -163,17 +163,17 @@ public class EmployesService {
     public Mono<ServerResponse> newPrint(ServerRequest request) {
 
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-        return request.bodyToMono(RequestMovementDto.class).map(
-                movement -> {
 
+        return getDocumentById(request.pathVariable("id")).map(
+                movement -> {
                     try {
                         NodeController nodeController = replaceSceneContent("/sample.fxml");
                         Controller c = (Controller) nodeController.getController();
                         c.addAllItems(movement.getMovementDetails())
                                 .setDtpFecha(movement.getDate())
-                                .setLblDireccion(movement.getAddres())
+                                .setLblDireccion("addres")
                                 .setLblNombre(movement.getName())
-                                .setLblRuc(movement.getDocumentNumber());
+                                .setLblRuc(movement.getNumber()[movement.getNumber().length-1].getNumber().toString());
                         print(nodeController.getNode());
                     } catch (Exception e1) {
                         e1.printStackTrace();
@@ -258,13 +258,6 @@ public class EmployesService {
     }
 
     public Mono<Movement> getDocumentById(String id){
-//        reactiveMongoOperations.aggregate(Aggregation.newAggregation(
-//                Aggregation.unwind("movements"),
-//                Aggregation.replaceRoot("movements"),
-//                Aggregation.match(where("_id").is(new ObjectId(id)))
-//        ),"employe",Movement.class).collectList().subscribe(System.out::println);
-
-//        return Mono.just(new Movement());
         return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
                 Aggregation.unwind("movements"),
                 Aggregation.replaceRoot("movements"),
@@ -314,6 +307,7 @@ public class EmployesService {
     public Mono<ServerResponse> anulateTicket(ServerRequest request) {
         return anulate(request);
     }
+
 }
 
 @Data
