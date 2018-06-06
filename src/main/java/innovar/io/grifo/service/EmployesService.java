@@ -8,6 +8,7 @@
 package innovar.io.grifo.service;
 
 import innovar.io.grifo.config.AppResponse;
+import innovar.io.grifo.config.ExceptionHandling.ObjetcNotFoundException;
 import innovar.io.grifo.config.ExceptionHandling.UserNotFoundException;
 import innovar.io.grifo.config.models.Controller;
 import innovar.io.grifo.config.models.NodeController;
@@ -212,32 +213,31 @@ public class EmployesService {
         }
     }
     public Mono<ServerResponse> getAllTickets(ServerRequest request) {
-        return getAllTickets().map(
+        return findAllTickets().map(
                 e->new ResponseMovementDto(e.getId(),e.getDate(),e.getName(),e.getNumberOfDocument())
         ).collectList().flatMap(AppResponse::AppResponseOk);
     }
 
     public Mono<ServerResponse> getAllBills(ServerRequest request) {
-        return getAllBills().map(
+        return findAllBills().map(
                 e->new ResponseMovementDto(e.getId(),e.getDate(),e.getName(),e.getNumberOfDocument())
         ).collectList().flatMap(
                 AppResponse::AppResponseOk
         );
     }
     public Mono<ServerResponse> anulateBill(ServerRequest request) {
-//          return reactiveMongoOperations.update(Employe.class).matching(request.pathVariable("id"));
         return null;
     }
     public Mono<ServerResponse> getTicketById(ServerRequest request) {
         return getDocumentById(request.pathVariable("id")).flatMap(
                 e->AppResponse.AppResponseOk(e.getMovementDetails())
-        );
+        ).switchIfEmpty(Mono.error(new ObjetcNotFoundException()));
     }
 
     public Mono<ServerResponse> getBillById(ServerRequest request) {
         return getDocumentById(request.pathVariable("id")).flatMap(
                 e->AppResponse.AppResponseOk(e.getMovementDetails())
-        );
+        ).switchIfEmpty(Mono.error(new ObjetcNotFoundException()));
     }
 
 
@@ -259,12 +259,25 @@ public class EmployesService {
         ),"employe",Movement.class).publishNext();
     }
 
-    public Mono<Movement> getAllBills(){
+    public Flux<Movement> findAllBills(){
         return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
                 Aggregation.unwind("movements"),
                 Aggregation.replaceRoot("movements"),
                 Aggregation.match(where("typeOfDocument").is("ruc"))
-        ),"employe",Movement.class).publishNext();
+        ),"employe",Movement.class);
+    }
+    public Flux<Movement> findAllTickets(){
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+                Aggregation.unwind("movements"),
+                Aggregation.replaceRoot("movements"),
+                Aggregation.match(where("typeOfDocument").is("dni"))
+        ),"employe",Movement.class);
+    }
+
+    public Mono<Long>anulate(String idEmploye,String idDocument){
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+
+        ),"employe",NumOfBill.class).map(e->5l).publishNext();
     }
 
 
