@@ -32,4 +32,5 @@ public class ResponseMovementDto {
     private LocalDate date;
     private String name;
     private String documentNumber;
+    private Long numeroFactura;
 }

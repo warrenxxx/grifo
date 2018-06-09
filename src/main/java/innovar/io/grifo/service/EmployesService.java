@@ -219,13 +219,15 @@ public class EmployesService {
     }
     public Mono<ServerResponse> getAllTickets(ServerRequest request) {
         return findAllTickets().map(
-                e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument())
+                e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument(),e.getNumber()[e.getNumber().length-1].getNumber())
         ).collectList().flatMap(AppResponse::AppResponseOk);
     }
 
+
+
     public Mono<ServerResponse> getAllBills(ServerRequest request) {
         return findAllBills().map(
-                e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument())
+                e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument(),e.getNumber()[e.getNumber().length-1].getNumber())
         ).collectList().flatMap(
                 AppResponse::AppResponseOk
         );
