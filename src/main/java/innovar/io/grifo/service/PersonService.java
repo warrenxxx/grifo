@@ -53,7 +53,7 @@ public class PersonService {
     }
 
     public Mono<ServerResponse> getByRuc(ServerRequest request) {
-        return Mono.just(captchaResolv.getRuc(request.pathVariable("dni"), tessdata, lang))
+        return Mono.just(captchaResolv.getRuc(request.pathVariable("ruc"), tessdata, lang))
                 .flatMap(AppResponse::AppResponseOk).onErrorResume(AppResponse::AppResponseError);
     }
 
