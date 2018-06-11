@@ -10,19 +10,19 @@ package innovar.io.grifo.service;
 import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.ExceptionHandling.ObjetcNotFoundException;
 import innovar.io.grifo.config.ExceptionHandling.UserNotFoundException;
-import innovar.io.grifo.config.models.Controller;
-import innovar.io.grifo.config.models.NodeController;
+//import innovar.io.grifo.config.models.Controller;
+//import innovar.io.grifo.config.models.NodeController;
 import innovar.io.grifo.dto.*;
 import innovar.io.grifo.entity.*;
 import innovar.io.grifo.repository.EmployesDao;
 import innovar.io.grifo.repository.ProductDao;
 import innovar.io.grifo.security.UserMetadate;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.fxml.JavaFXBuilderFactory;
-import javafx.print.PrinterJob;
-import javafx.scene.Node;
-import jdk.management.resource.internal.ApproverGroup;
+//import javafx.fxml.FXMLLoader;
+//import javafx.fxml.Initializable;
+//import javafx.fxml.JavaFXBuilderFactory;
+//import javafx.print.PrinterJob;
+//import javafx.scene.Node;
+
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,7 +120,8 @@ public class EmployesService {
                                                             .toArray(size -> new MovementDetail[size]),
                                                     new NumberOfPrint[]{
                                                             new NumberOfPrint(total + 1, true)
-                                                    },movement.getName()
+                                                    },movement.getName(),
+                                                    movement.getAddres()
                                             ))).first().flatMap(
                                                     updateResult -> AppResponse.AppResponseOk(id.toString())
                                             )
@@ -134,7 +135,9 @@ public class EmployesService {
         ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
         ObjectId id=new ObjectId();
         return getNumOFBill().flatMap(
-                total -> request.bodyToMono(RequestMovementDto.class).flatMap(
+                total -> request.bodyToMono(RequestMovementDto.class)
+
+                        .flatMap(
                         movement -> reactiveMongoOperations.update(Employe.class).matching(new Query(where("_id").is(idUser))).apply(new Update().push("movements", new Movement(
                                 id.toString(),
                                 movement.getDate(),
@@ -153,70 +156,70 @@ public class EmployesService {
                                 ).toArray(size -> new MovementDetail[size]),
                                 new NumberOfPrint[]{
                                         new NumberOfPrint(total + 1, true)
-                                },movement.getName()
+                                },movement.getName(),movement.getAddres()
                         ))).first().flatMap(
                                 updateResult -> AppResponse.AppResponseOk(id.toString())
                         ))
-        ).onErrorResume(e -> AppResponse.AppResponseError(e));
+        ).onErrorResume(AppResponse::AppResponseError);
     }
 
-    public Mono<ServerResponse> newPrint(ServerRequest request) {
-
-        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
-
-        return getDocumentById(request.pathVariable("id")).map(
-                movement -> {
-                    try {
-                        NodeController nodeController = replaceSceneContent("/sample.fxml");
-                        Controller c = (Controller) nodeController.getController();
-                        c.addAllItems(movement.getMovementDetails())
-                                .setDtpFecha(movement.getDate())
-                                .setLblDireccion("addres")
-                                .setLblNombre(movement.getName())
-                                .setLblRuc(movement.getNumber()[movement.getNumber().length-1].getNumber().toString());
-                        print(nodeController.getNode());
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-
-                    return movement;
-                }
-        ).flatMap(e -> AppResponse.AppResponseOk())
-
-                .onErrorResume(e -> AppResponse.AppResponseError(e));
-    }
-
-
-    private NodeController replaceSceneContent(String fxml) throws Exception {
-
-        FXMLLoader loader = new FXMLLoader();
-        InputStream in = getClass().getResourceAsStream(fxml);
-
-        loader.setBuilderFactory(new JavaFXBuilderFactory());
-        loader.setLocation(getClass().getResource(fxml));
-        Node page;
-
-        try {
-
-            page = loader.load(in);
-
-        } finally {
-            in.close();
-        }
-        return new NodeController((Initializable) loader.getController(), page);
-    }
-
-    private void print(Node node) throws InterruptedException {
-        PrinterJob job = PrinterJob.createPrinterJob();
-        if (job != null) {
-            boolean printed = job.printPage(node);
-            Thread.sleep(500);
-            if (printed) {
-                job.endJob();
-                System.out.println("imprimio");
-            }
-        }
-    }
+//    public Mono<ServerResponse> newPrint(ServerRequest request) {
+//
+//        ObjectId idUser = ((UserMetadate) request.attributes().get(OBJECT_USER)).getId();
+//
+//        return getDocumentById(request.pathVariable("id")).map(
+//                movement -> {
+//                    try {
+//                        NodeController nodeController = replaceSceneContent("/sample.fxml");
+//                        Controller c = (Controller) nodeController.getController();
+//                        c.addAllItems(movement.getMovementDetails())
+//                                .setDtpFecha(movement.getDate())
+//                                .setLblDireccion("addres")
+//                                .setLblNombre(movement.getName())
+//                                .setLblRuc(movement.getNumber()[movement.getNumber().length-1].getNumber().toString());
+//                        print(nodeController.getNode());
+//                    } catch (Exception e1) {
+//                        e1.printStackTrace();
+//                    }
+//
+//                    return movement;
+//                }
+//        ).flatMap(e -> AppResponse.AppResponseOk())
+//
+//                .onErrorResume(e -> AppResponse.AppResponseError(e));
+//    }
+//
+//
+//    private NodeController replaceSceneContent(String fxml) throws Exception {
+//
+//        FXMLLoader loader = new FXMLLoader();
+//        InputStream in = getClass().getResourceAsStream(fxml);
+//
+//        loader.setBuilderFactory(new JavaFXBuilderFactory());
+//        loader.setLocation(getClass().getResource(fxml));
+//        Node page;
+//
+//        try {
+//
+//            page = loader.load(in);
+//
+//        } finally {
+//            in.close();
+//        }
+//        return new NodeController((Initializable) loader.getController(), page);
+//    }
+//
+//    private void print(Node node) throws InterruptedException {
+//        PrinterJob job = PrinterJob.createPrinterJob();
+//        if (job != null) {
+//            boolean printed = job.printPage(node);
+//            Thread.sleep(500);
+//            if (printed) {
+//                job.endJob();
+//                System.out.println("imprimio");
+//            }
+//        }
+//    }
     public Mono<ServerResponse> getAllTickets(ServerRequest request) {
         return findAllTickets().map(
                 e->new ResponseMovementDto(e.getId().toString(),e.getDate(),e.getName(),e.getNumberOfDocument(),e.getNumber()[e.getNumber().length-1].getNumber())
@@ -260,6 +263,13 @@ public class EmployesService {
     }
 
     public Mono<Movement> getDocumentById(String id){
+        return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
+                Aggregation.unwind("movements"),
+                Aggregation.replaceRoot("movements"),
+                Aggregation.match(where("_id").is(new ObjectId(id)))
+        ),"employe",Movement.class).publishNext();
+    }
+    public Mono<Movement> getAllDocumentById(String id){
         return reactiveMongoOperations.aggregate(Aggregation.newAggregation(
                 Aggregation.unwind("movements"),
                 Aggregation.replaceRoot("movements"),
@@ -310,6 +320,18 @@ public class EmployesService {
         return anulate(request);
     }
 
+    public Mono<ServerResponse> getfullbyid(ServerRequest request) {
+        return getDocumentById(request.pathVariable("id"))
+                .map(
+                        e->{
+                            e.getMovementDetails()[0].setIdToString();
+                                    return e;
+                        }
+                )
+                .flatMap(
+                e->AppResponse.AppResponseOk(e)
+        ).switchIfEmpty(Mono.error(new UserNotFoundException()));
+    }
 }
 
 @Data

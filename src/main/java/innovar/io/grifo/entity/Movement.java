@@ -28,4 +28,5 @@ public class Movement {
     private MovementDetail[] movementDetails;
     private NumberOfPrint number[];
     private String name;
+    private String address;
 }

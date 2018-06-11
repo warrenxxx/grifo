@@ -25,6 +25,7 @@ public class PersonController {
         return route(GET("/person/dni/{dni}"),service::getByDni)
                 .andRoute(GET("/person/ruc/{ruc}"),service::getByRuc)
                 .andRoute(POST("/person"),service::inertPerson)
+                .andRoute(POST("/personAll"),service::insertAllPerson)
                 .andRoute(GET("/person/text/{text}"),service::findPersonByText);
     }
 }

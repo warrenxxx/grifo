@@ -48,8 +48,8 @@ public class PeticionCookie {
             byte[] buffer = new byte[initialStream.available()];
             initialStream.read(buffer);
 
-            fileReniec = new File("w1.jpg");
-            System.out.println(fileReniec.getAbsolutePath().toString());
+            fileReniec = new File(getClass().getResource("/img/w2.jpg").getPath());
+
             OutputStream outStream = new FileOutputStream(fileReniec);
             outStream.write(buffer);
 
@@ -144,7 +144,7 @@ public class PeticionCookie {
             ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
 
 
-            fileSunnat = new File("w2.jpg");
+            fileSunnat = new File(getClass().getResource("/img/w2.jpg").getPath());
 
             OutputStream outStream = new FileOutputStream(fileSunnat);
 

@@ -83,8 +83,6 @@ public class CaptchaResolv {
             logeoSunnat = new BusquedaCookie().buscarCookieLogueo("http://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/frameCriterioBusqueda.jsp");
             new PeticionCookie().peticionConCookieImagen("http://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/captcha?accion=image", "POST", "", (List<HttpCookie>) logeoSunnat.get(0));
             codSunnat=read(PeticionCookie.fileSunnat,tessdata,lang);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,6 +201,7 @@ public class CaptchaResolv {
                 .set_id(new ObjectId().toString())
                 .setAllName(getData(0,1,table).split("-")[1].trim())
                 .setRucUser(getData(0,1,table).split("-")[0].trim())
+                .setAddress(getData(6,1,table).trim())
         ;
 //        System.out.println("-----"+getData(0,1,table).split("-")[0].trim()+"-----");
         return new Person()
@@ -210,6 +209,7 @@ public class CaptchaResolv {
                 .setAllName(getData(0,1,table).split("-")[1].trim())
                 .setDni(getData(2,1,table).split("-")[0].split(" ")[1].trim())
                 .setRucUser(getData(0,1,table).split("-")[0].trim())
+                .setAddress(getData(7,1,table).trim())
                 ;
     }
 

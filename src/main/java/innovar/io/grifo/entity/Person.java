@@ -29,6 +29,7 @@ public class Person {
     private String _id;
 
     @TextIndexed
+
     private String allName;
 
     @TextIndexed
@@ -37,7 +38,7 @@ public class Person {
     @TextIndexed
     private String dni;
 
-    private Address address;
+    private String address;
 
     private String estateCondition;
 

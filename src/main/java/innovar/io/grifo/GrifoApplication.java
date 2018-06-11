@@ -9,12 +9,15 @@ import innovar.io.grifo.repository.PojoDao;
 import innovar.io.grifo.repository.UserDao;
 import innovar.io.grifo.security.CorsConfiguration;
 import innovar.io.grifo.service.EmployesService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import org.springframework.web.server.WebFilter;
+
+import java.io.File;
 
 
 @SpringBootApplication
@@ -41,6 +44,7 @@ public class GrifoApplication{
             userDao.countByPasswordAndUserName("admin","admin").subscribe(System.out::println);
         };
     }
+
     @Bean
 
     public WebFilter corsFilter() {

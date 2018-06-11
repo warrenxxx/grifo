@@ -27,13 +27,15 @@ public class MovementController {
     RouterFunction Employefunction(EmployesService service){
         return route(POST("/movement/ticker"),service::newTicket)
                 .andRoute(POST("/movement/bill"),service::newBill)
-                .andRoute(GET("/movement/print/{id}"),service::newPrint)
+//                .andRoute(GET("/movement/print/{id}"),service::newPrint)
                 .andRoute(GET("/movement/anular/bill/{id}"),service::anulateBill)
                 .andRoute(GET("/movement/anular/ticket/{id}"),service::anulateTicket)
                 .andRoute(GET("/movement/tickets"),service::getAllTickets)
                 .andRoute(GET("/movement/bills"),service::getAllBills)
                 .andRoute(GET("/movement/ticket/{id}"),service::getTicketById)
                 .andRoute(GET("/movement/bills/{id}"),service::getBillById)
+                .andRoute(GET("/movement/full_bills/{id}"),service::getfullbyid)
+                .andRoute(GET("/movement/full_ticket/{id}"),service::getfullbyid)
                 .filter(jwt::verifyFunctions)
                 ;
     }
