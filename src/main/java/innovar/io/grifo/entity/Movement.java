@@ -29,4 +29,5 @@ public class Movement {
     private NumberOfPrint number[];
     private String name;
     private String address;
+    private String placa;
 }

@@ -34,4 +34,5 @@ public class RequestMovementDto {
     private Double igv;
     private Boolean isTicket;
     private RequestMovementDetailDto[] movementDetails;
+    private String placa;
 }

@@ -121,7 +121,8 @@ public class EmployesService {
                                                     new NumberOfPrint[]{
                                                             new NumberOfPrint(total + 1, true)
                                                     },movement.getName(),
-                                                    movement.getAddres()
+                                                    movement.getAddres(),
+                                                    movement.getPlaca()
                                             ))).first().flatMap(
                                                     updateResult -> AppResponse.AppResponseOk(id.toString())
                                             )
@@ -156,7 +157,7 @@ public class EmployesService {
                                 ).toArray(size -> new MovementDetail[size]),
                                 new NumberOfPrint[]{
                                         new NumberOfPrint(total + 1, true)
-                                },movement.getName(),movement.getAddres()
+                                },movement.getName(),movement.getAddres(),movement.getPlaca()
                         ))).first().flatMap(
                                 updateResult -> AppResponse.AppResponseOk(id.toString())
                         ))
