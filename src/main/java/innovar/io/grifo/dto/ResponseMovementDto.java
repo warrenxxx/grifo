@@ -33,4 +33,5 @@ public class ResponseMovementDto {
     private String name;
     private String documentNumber;
     private Long numero;
+    private String placa;
 }
