@@ -29,13 +29,12 @@ public class Person {
     private String _id;
 
     @TextIndexed
-
     private String allName;
 
-    @TextIndexed
+    @Indexed
     private String rucUser;
 
-    @TextIndexed
+    @Indexed
     private String dni;
 
     private String address;
