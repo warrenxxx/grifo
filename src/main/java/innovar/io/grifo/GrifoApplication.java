@@ -30,12 +30,7 @@ public class GrifoApplication{
     @Bean
     CommandLineRunner runner(EmployesService service , UserDao userDao){
         return args -> {
-            service.getNumOFBill().subscribe(System.out::println);
-            service.getDocumentById("5b171dc3086230359026d6e0").subscribe(System.out::println);
-            service.getNumOfDocument("5b171c730862304cbce09370","5b171dc5086230359026d6e1").subscribe(System.out::println);
-
-            userDao.existsById("5b171696086230453c397b4c").subscribe(System.out::println);
-            userDao.countByPasswordAndUserName("admin","admin").subscribe(System.out::println);
+            System.out.println("la csmre");
         };
     }
 
