@@ -83,7 +83,8 @@ public class EmployesService {
                                 employe.getEmail(),
                                 employe.getUserName(),
                                 TO_JWT(employe.get_id(), "employe"),
-                                null
+                                null,
+                                "employe"
                         ))
                 ).switchIfEmpty(Mono.error(new UserNotFoundException()))
         ).onErrorResume(e -> AppResponse.AppResponseError(e));
