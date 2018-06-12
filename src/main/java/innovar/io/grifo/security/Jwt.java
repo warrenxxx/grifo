@@ -3,6 +3,7 @@ package innovar.io.grifo.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.ExceptionHandling.AuthorizationException;
 import innovar.io.grifo.config.ExceptionHandling.HeaderException;
@@ -55,10 +56,7 @@ public class Jwt {
     }
 
     public Mono<ServerResponse> verifyFunctions(ServerRequest req, HandlerFunction<ServerResponse> next) {
-        System.out.println("warrena");
         Stream.of(req.headers().header("Authorization").toArray(new String[0])).forEach(System.out::println);
-        System.out.println("warrenb");
-
         return Flux.just(req.headers().header("Authorization").toArray(new String[0]))
                 .limitRequest(1)
                 .map(JWT::decode)
@@ -78,6 +76,10 @@ public class Jwt {
                 .onErrorResume(AppResponse::AppResponseError)
                 ;
     }
+    public static UserMetadate ToUserMetadate(String token) {
+        DecodedJWT jwt= JWT.decode(token);
+        return  new UserMetadate(new ObjectId(jwt.getHeaderClaim(ID_USER).asString()),jwt.getHeaderClaim(ROLE_USER).asString());
+     }
 
 
     public static Mono<String> getIdOfJwtToken(ServerRequest req) {

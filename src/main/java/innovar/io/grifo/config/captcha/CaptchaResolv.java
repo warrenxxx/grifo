@@ -177,7 +177,6 @@ public class CaptchaResolv {
 
         try {
             rpta = new PeticionCookie().peticionConCookieString(sb_url.toString(), "POST", parametros, (List<HttpCookie>)logeoSunnat.get(0));
-            System.out.println(rpta);
             Document doc=Jsoup.parse(rpta);
             Elements td=doc.getElementsByTag("td");
 

@@ -24,6 +24,7 @@ public class ConfigControllerr {
     RouterFunction<ServerResponse> ConfigSinFilter(ConfigService service){
         return route(POST("/config"),service::add)
                 .andRoute(PUT("/config"),service::add)
-                .andRoute(GET("/config"),service::get);
+                .andRoute(GET("/config"),service::get)
+                .andRoute(GET("/config/{token}"),service::verifiToken);
     }
 }

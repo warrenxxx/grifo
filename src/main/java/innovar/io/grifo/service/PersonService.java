@@ -9,6 +9,7 @@ package innovar.io.grifo.service;
 
 import innovar.io.grifo.config.AppResponse;
 import innovar.io.grifo.config.captcha.CaptchaResolv;
+import innovar.io.grifo.entity.Address;
 import innovar.io.grifo.entity.Person;
 import innovar.io.grifo.repository.PersonDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,15 @@ public class PersonService {
         ).onErrorResume(AppResponse::AppResponseError);
     }
     public Mono<ServerResponse> insertAllPerson(ServerRequest request) {
-        return null;
+        return request.bodyToFlux(Person.class)
+//                .filter(e->
+//                        ((Address)e.getAddress()).getUbigeo().substring(0,2).compareTo("08")==0 ||
+//                                ((Address)e.getAddress()).getUbigeo().substring(0,2).compareTo("05")==0 ||
+//                                ((Address)e.getAddress()).getUbigeo().substring(0,2).compareTo("07")==0 ||
+//                                ((Address)e.getAddress()).getUbigeo().substring(0,2).compareTo("17")==0
+//                )
+                .map(
+                e->dao.insert(e).subscribe(System.out::println)
+        ).count().flatMap(e->ok().build());
     }
 }
