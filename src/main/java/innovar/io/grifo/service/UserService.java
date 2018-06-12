@@ -45,7 +45,6 @@ public class UserService {
         return  request.bodyToMono(LoginDto.class).flatMap(
                 loginDto ->dao.countByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser(  )).flatMap(
                         existUser->{
-                            System.out.println(existUser);
                             return existUser>0?
                                     dao.getUserByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
                                             user ->{
@@ -57,7 +56,8 @@ public class UserService {
                                                         user.getEmail(),
                                                         user.getUserName(),
                                                         TO_JWT(user.get_id(),user.getRole()),
-                                                        user.getCompany()
+                                                        user.getCompany(),
+                                                        "admin"
                                                 ));
                                             })
                                     :employesDao.countByPasswordAndUserName(loginDto.getPassword(),loginDto.getUser()).flatMap(
@@ -70,7 +70,8 @@ public class UserService {
                                                             employe.getEmail(),
                                                             employe.getUserName(),
                                                             TO_JWT(employe.get_id(),"employe"),
-                                                            null
+                                                            null,
+                                                            "emplyoe"
                                                     ))
                                             ):
                                             Mono.error(new UserNotFoundException())

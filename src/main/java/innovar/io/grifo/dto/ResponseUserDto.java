@@ -39,5 +39,5 @@ public class ResponseUserDto {
     private String token;
     private Company company;
 
-
+    private String role;
 }
