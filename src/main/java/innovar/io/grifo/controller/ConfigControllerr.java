@@ -7,9 +7,7 @@
  */
 package innovar.io.grifo.controller;
 
-import innovar.io.grifo.entity.Config;
 import innovar.io.grifo.service.ConfigService;
-import innovar.io.grifo.service.PojoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;

@@ -1,5 +1,5 @@
 /**
- * The Config class is implemment to
+ * The Configt class is implemment to
  *
  * @version :1.0
  * @Author :Warren
@@ -17,7 +17,7 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class Config {
+public class Configt {
     @Id
     public Long id = 1l;
     public String type;

@@ -7,8 +7,8 @@
  */
 package innovar.io.grifo.repository;
 
-import innovar.io.grifo.entity.Config;
+import innovar.io.grifo.entity.Configt;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
-public interface ConfigDao extends ReactiveMongoRepository<Config,String> {
+public interface ConfigDao extends ReactiveMongoRepository<Configt,String> {
 }
