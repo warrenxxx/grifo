@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Accessors(chain = true)
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Accessors(chain = true)
 public class MovementDetail {
     private Object _idProduct;
     private Long quantityGal;
