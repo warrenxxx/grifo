@@ -159,7 +159,7 @@ public class PeticionCookie {
             return image;
         } catch (Exception e) {
 //            JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieImagen", JOptionPane.ERROR_MESSAGE);
-            throw e;
+            throw e;gi
         }
     }
 
