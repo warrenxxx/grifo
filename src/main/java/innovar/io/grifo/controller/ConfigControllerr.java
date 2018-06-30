@@ -13,10 +13,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Configuration
 public class ConfigControllerr {
@@ -26,5 +28,9 @@ public class ConfigControllerr {
                 .andRoute(PUT("/config"),service::add)
                 .andRoute(GET("/config"),service::get)
                 .andRoute(GET("/config/{token}"),service::verifiToken);
+    }
+    @Bean
+    RouterFunction<ServerResponse> holaMundo(ConfigService service){
+        return route(GET("/"),serverRequest -> ok().body(fromObject("hola")));
     }
 }
