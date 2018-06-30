@@ -145,7 +145,9 @@ public class PeticionCookie {
 
 
             fileSunnat = new File(getClass().getResource("/img/w2.jpg").getPath());
-
+            System.out.println(fileSunnat==null);
+            System.out.println(fileSunnat.getPath());
+            System.out.println(fileSunnat.canRead());
             OutputStream outStream = new FileOutputStream(fileSunnat);
 
 
