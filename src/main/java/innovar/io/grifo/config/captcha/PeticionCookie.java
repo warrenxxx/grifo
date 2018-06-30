@@ -8,6 +8,7 @@
 
 package innovar.io.grifo.config.captcha;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -145,9 +146,7 @@ public class PeticionCookie {
 
 
             fileSunnat = new File(getClass().getResource("/img/w2.jpg").getPath());
-            System.out.println(fileSunnat==null);
-            System.out.println(fileSunnat.getPath());
-            System.out.println(fileSunnat.canRead());
+
             OutputStream outStream = new FileOutputStream(fileSunnat);
 
 
@@ -160,8 +159,7 @@ public class PeticionCookie {
             reader.close();
             return image;
         } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieImagen", JOptionPane.ERROR_MESSAGE);
-            System.out.println("error");
+            JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieImagen", JOptionPane.ERROR_MESSAGE);
             throw e;
         }
     }
@@ -203,8 +201,8 @@ public class PeticionCookie {
             return answer;
             
         } catch (Exception e) {
-            System.out.println("warren");
-       //     JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieString", JOptionPane.ERROR_MESSAGE);
+
+            JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieString", JOptionPane.ERROR_MESSAGE);
             throw e;
         }
     }

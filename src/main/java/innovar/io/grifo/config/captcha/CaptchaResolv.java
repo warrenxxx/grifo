@@ -223,6 +223,7 @@ public class CaptchaResolv {
         BytePointer outText = null;
         lept.PIX image = null;
         try {
+
             image = lept.pixRead(file.getAbsolutePath());
 
             api.SetImage(image);
