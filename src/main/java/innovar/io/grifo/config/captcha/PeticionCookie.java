@@ -201,8 +201,8 @@ public class PeticionCookie {
             return answer;
             
         } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieString", JOptionPane.ERROR_MESSAGE);
+            System.out.println("warren");
+       //     JOptionPane.showMessageDialog(null, "No se puede obtener Cookies ", "Consulta RUC - peticionConCookieString", JOptionPane.ERROR_MESSAGE);
             throw e;
         }
     }
